@@ -1,19 +1,56 @@
 package com.dreamdigitizers.datafetchingapis.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity(name = "music_zing")
 public class Song {
+    @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "performer")
     private String performer;
+
+    @Column(name = "link")
     private String link;
+
+    @Column(name = "source")
     private String source;
+
+    @Column(name = "hq")
     private String hq;
+
+    @Column(name = "duration")
     private String duration;
+
+    @Column(name = "lyric")
     private String lyric;
+
+    @Column(name = "mv_link")
     private String mvLink;
+
+    @Column(name = "ad_param")
     private String adParam;
+
+    @Column(name = "back_image")
     private String backImage;
+
+    @Column(name = "error_code")
     private String errorCode;
+
+    @Column(name = "error_message")
     private String errorMessage;
+
+    @JsonIgnore
+    @Column(name = "file_name")
+    private String fileName;
 
     public String getId() {
         return id;
@@ -117,5 +154,13 @@ public class Song {
 
     public void setErrorMessage(String value) {
         this.errorMessage = value;
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    public void setFileName(String value) {
+        this.fileName = value;
     }
 }
