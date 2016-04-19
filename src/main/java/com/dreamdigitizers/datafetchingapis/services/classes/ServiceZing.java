@@ -1,6 +1,6 @@
-package com.dreamdigitizers.datafetchingapis.controllers.services.classes;
+package com.dreamdigitizers.datafetchingapis.services.classes;
 
-import com.dreamdigitizers.datafetchingapis.controllers.services.interfaces.IServiceZing;
+import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
 import com.dreamdigitizers.datafetchingapis.models.Song;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -1,4 +1,4 @@
-package com.dreamdigitizers.datafetchingapis.controllers.services.interfaces;
+package com.dreamdigitizers.datafetchingapis.services.interfaces;
 
 import com.dreamdigitizers.datafetchingapis.models.Song;
 

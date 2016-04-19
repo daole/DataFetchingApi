@@ -1,4 +1,4 @@
-package com.dreamdigitizers.datafetchingapis.controllers.repositories.zing;
+package com.dreamdigitizers.datafetchingapis.repositories.zing;
 
 import com.dreamdigitizers.datafetchingapis.models.Song;
 import org.springframework.data.jpa.repository.JpaRepository;
