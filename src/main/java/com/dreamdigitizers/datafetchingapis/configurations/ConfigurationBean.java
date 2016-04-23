@@ -1,6 +1,8 @@
 package com.dreamdigitizers.datafetchingapis.configurations;
 
+import com.dreamdigitizers.datafetchingapis.services.classes.ServiceNct;
 import com.dreamdigitizers.datafetchingapis.services.classes.ServiceZing;
+import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceNct;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,11 @@ public class ConfigurationBean extends WebMvcConfigurerAdapter {
     @Bean
     public IServiceZing zingService() {
         return new ServiceZing();
+    }
+
+    @Bean
+    public IServiceNct nctService() {
+        return new ServiceNct();
     }
 
     @Bean

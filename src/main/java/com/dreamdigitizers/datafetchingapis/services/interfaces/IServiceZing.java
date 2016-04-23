@@ -1,9 +1,9 @@
 package com.dreamdigitizers.datafetchingapis.services.interfaces;
 
-import com.dreamdigitizers.datafetchingapis.models.Song;
+import com.dreamdigitizers.datafetchingapis.models.MusicZing;
 
 import java.io.IOException;
 
 public interface IServiceZing {
-    Song fetch(String name, String artist, String id) throws IOException;
+    MusicZing fetch(String name, String artist, String id) throws IOException;
 }

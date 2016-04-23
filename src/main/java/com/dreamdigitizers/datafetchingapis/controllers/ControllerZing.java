@@ -1,9 +1,9 @@
 package com.dreamdigitizers.datafetchingapis.controllers;
 
 import com.dreamdigitizers.datafetchingapis.exceptions.ExceptionSongNotFound;
-import com.dreamdigitizers.datafetchingapis.repositories.zing.IMusicZingRepository;
+import com.dreamdigitizers.datafetchingapis.repositories.IRepositoryMusicZing;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
-import com.dreamdigitizers.datafetchingapis.models.Song;
+import com.dreamdigitizers.datafetchingapis.models.MusicZing;
 import com.dreamdigitizers.datafetchingapis.utilities.Downloader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class ControllerZing {
     @Value("${fileName.downloadFileName}")
     private String downloadFileName;
 
-    @Value("${resources.downloads}")
+    @Value("${resources.downloads.zing}")
     private String downloadsDirectory;
 
     @Autowired
@@ -33,23 +33,26 @@ public class ControllerZing {
     private IServiceZing serviceZing;
 
     @Autowired
-    private IMusicZingRepository musicZingRepository;
+    private IRepositoryMusicZing repositoryMusicZing;
 
     @RequestMapping(value = "/fetch", method = RequestMethod.GET)
-    public Song fetch(@RequestParam(value="name") String name, @RequestParam(value="artist") String artist, @RequestParam(value="id") String id) throws IOException, ExceptionSongNotFound {
-        Song song = this.musicZingRepository.findOne(id);
-        if (song == null) {
-            song = serviceZing.fetch(name, artist, id);
-            if (song == null) {
-                throw new ExceptionSongNotFound(this.messageSource, name);
-            } else {
-                this.downloadAndSaveSongInformation(song);
+    public MusicZing fetch(@RequestParam(value="name") String name, @RequestParam(value="artist") String artist, @RequestParam(value="id") String id) throws ExceptionSongNotFound {
+        MusicZing musicZing = this.repositoryMusicZing.findOne(id);
+        if (musicZing == null) {
+            try {
+                musicZing = this.serviceZing.fetch(name, artist, id);
+            } catch (IOException e) {
+                throw new ExceptionSongNotFound(this.messageSource, name, e);
             }
+            if (musicZing == null) {
+                throw new ExceptionSongNotFound(this.messageSource, name);
+            }
+            this.downloadAndSaveSongInformation(musicZing);
         }
-        return song;
+        return musicZing;
     }
 
-    private void downloadAndSaveSongInformation(final Song song) {
+    private void downloadAndSaveSongInformation(final MusicZing musicZing) {
         this.downloadThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -60,10 +63,10 @@ public class ControllerZing {
                                     .getResource(ControllerZing.this.downloadsDirectory)
                                     .toURI()
                     ).toFile().getAbsolutePath();
-                    String savedFileName = Downloader.download(song.getSource(), destinationDirectory, String.format(ControllerZing.this.downloadFileName, song.getTitle(), song.getId()), true);
+                    String savedFileName = Downloader.download(musicZing.getSource(), destinationDirectory, String.format(ControllerZing.this.downloadFileName, musicZing.getTitle(), musicZing.getId()), true);
                     if (!StringUtils.isEmpty(savedFileName)) {
-                        song.setFileName(savedFileName);
-                        ControllerZing.this.musicZingRepository.save(song);
+                        musicZing.setFileName(savedFileName);
+                        ControllerZing.this.repositoryMusicZing.save(musicZing);
                     }
                 } catch (URISyntaxException e) {
                     e.printStackTrace();

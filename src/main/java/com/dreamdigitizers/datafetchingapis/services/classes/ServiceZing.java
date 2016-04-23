@@ -1,7 +1,7 @@
 package com.dreamdigitizers.datafetchingapis.services.classes;
 
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
-import com.dreamdigitizers.datafetchingapis.models.Song;
+import com.dreamdigitizers.datafetchingapis.models.MusicZing;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,8 +59,8 @@ public class ServiceZing implements IServiceZing {
     private String xmlElementErrorMessage;
 
     @Override
-    public Song fetch(String name, String artist, String id) throws IOException {
-        Song song = null;
+    public MusicZing fetch(String name, String artist, String id) throws IOException {
+        MusicZing musicZing = null;
         String songPageUrl = String.format(this.songUrl, (name + " " + artist).replace(" ", this.songTitleSeparator), id);
         Document songPageDocument = Jsoup.connect(songPageUrl).get();
         Element element = songPageDocument.select(this.htmlElementId).first();
@@ -79,21 +79,21 @@ public class ServiceZing implements IServiceZing {
             Element backImage = songXmlDataDocument.select(this.xmlElementBackImage).first();
             Element errorCode = songXmlDataDocument.select(this.xmlElementErrorCode).first();
             Element errorMessage = songXmlDataDocument.select(this.xmlElementErrorMessage).first();
-            song = new Song();
-            song.setId(id);
-            song.setTitle(title.text());
-            song.setPerformer(performer.text());
-            song.setLink(link.text());
-            song.setSource(source.text());
-            song.setHq(hq.text());
-            song.setDuration(duration.text());
-            song.setLyric(lyric.text());
-            song.setMvLink(mvLink.text());
-            song.setAdParam(adParam.text());
-            song.setBackImage(backImage.text());
-            song.setErrorCode(errorCode.text());
-            song.setErrorMessage(errorMessage.text());
+            musicZing = new MusicZing();
+            musicZing.setId(id);
+            musicZing.setTitle(title.text());
+            musicZing.setPerformer(performer.text());
+            musicZing.setLink(link.text());
+            musicZing.setSource(source.text());
+            musicZing.setHq(hq.text());
+            musicZing.setDuration(duration.text());
+            musicZing.setLyric(lyric.text());
+            musicZing.setMvLink(mvLink.text());
+            musicZing.setAdParam(adParam.text());
+            musicZing.setBackImage(backImage.text());
+            musicZing.setErrorCode(errorCode.text());
+            musicZing.setErrorMessage(errorMessage.text());
         }
-        return song;
+        return musicZing;
     }
 }

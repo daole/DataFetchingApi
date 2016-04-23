@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity(name = "music_zing")
-public class Song {
+public class MusicZing {
     @Id
     @Column(name = "id")
     private String id;
