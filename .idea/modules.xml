@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DataFetchingApis.iml" filepath="$PROJECT_DIR$/DataFetchingApis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DataFetchingApis.iml" filepath="$PROJECT_DIR$/.idea/modules/DataFetchingApis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DataFetchingApis_main.iml" filepath="$PROJECT_DIR$/.idea/modules/DataFetchingApis_main.iml" group="DataFetchingApis" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DataFetchingApis_test.iml" filepath="$PROJECT_DIR$/.idea/modules/DataFetchingApis_test.iml" group="DataFetchingApis" />
     </modules>
   </component>
 </project>
