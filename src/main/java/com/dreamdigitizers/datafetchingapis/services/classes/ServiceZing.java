@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class ServiceZing implements IServiceZing {
     @Value("${zing.songUrl}")
@@ -93,6 +94,7 @@ public class ServiceZing implements IServiceZing {
             musicZing.setBackImage(backImage.text());
             musicZing.setErrorCode(errorCode.text());
             musicZing.setErrorMessage(errorMessage.text());
+            musicZing.setLastFetchDatetime(new Date());
         }
         return musicZing;
     }

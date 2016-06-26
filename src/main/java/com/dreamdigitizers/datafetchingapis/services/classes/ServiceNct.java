@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,6 +97,7 @@ public class ServiceNct implements IServiceNct {
             musicNct.setNewTab(newTab.text());
             musicNct.setKbit(kbit.text());
             musicNct.setId(key.text());
+            musicNct.setLastFetchDatetime(new Date());
         }
         return musicNct;
     }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity(name = "music_zing")
 public class MusicZing {
@@ -51,6 +52,10 @@ public class MusicZing {
     @JsonIgnore
     @Column(name = "file_name")
     private String fileName;
+
+    @JsonIgnore
+    @Column
+    private Date lastFetchDatetime;
 
     public String getId() {
         return id;
@@ -162,5 +167,13 @@ public class MusicZing {
 
     public void setFileName(String value) {
         this.fileName = value;
+    }
+
+    public Date getLastFetchDatetime() {
+        return this.lastFetchDatetime;
+    }
+
+    public void setLastFetchDatetime(Date lastFetchDatetime) {
+        this.lastFetchDatetime = lastFetchDatetime;
     }
 }
