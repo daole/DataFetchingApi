@@ -1,5 +1,6 @@
 package com.dreamdigitizers.datafetchingapis.configurations;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +13,9 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
     private static final String API_USER_NAME = "androiddatafetchingapisclient";
     private static final String API_USER_PASSWORD = "androiddatafetchingapisclient";
     private static final String API_USER_ROLE = "USER";
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -26,5 +30,8 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
         httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated();
         httpSecurity.httpBasic();
         httpSecurity.csrf().disable();
+        if ("production".equals(this.activeProfile)) {
+            httpSecurity.requiresChannel().anyRequest().requiresSecure();
+        }
     }
 }
