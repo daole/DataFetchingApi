@@ -90,12 +90,14 @@ public class ControllerNct {
                     if (!StringUtils.isEmpty(savedFileName)) {
                         String savedFilePath = destinationDirectory + "/" + savedFileName;
                         List<String> destinationDirectories = Arrays.asList(ControllerNct.this.uploadsDirectory);
-                        ControllerNct.this.serviceGoogleDrive.upload(savedFilePath, destinationDirectories);
+                        boolean shouldSave = ControllerNct.this.serviceGoogleDrive.upload(savedFilePath, destinationDirectories);
                         File savedFile = new File(savedFilePath);
                         savedFile.delete();
 
-                        musicNct.setFileName(savedFileName);
-                        ControllerNct.this.repositoryMusicNct.save(musicNct);
+                        if (shouldSave) {
+                            musicNct.setFileName(savedFileName);
+                            ControllerNct.this.repositoryMusicNct.save(musicNct);
+                        }
                     }
                 } catch (URISyntaxException e) {
                     e.printStackTrace();

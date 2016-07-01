@@ -27,6 +27,8 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 
 public class ServiceGoogleDrive implements IServiceCloudUpload {
+    private static final String DATA_STORE_ID = "credentialDataStore";
+
     @Value("${google.applicationName}")
     private String applicationName;
 
@@ -59,7 +61,6 @@ public class ServiceGoogleDrive implements IServiceCloudUpload {
             if (!this.isInitialized) {
                 this.initialize();
             }
-
             String fileName = new java.io.File(filePath).getName();
             String mimeType = Files.probeContentType(Paths.get(filePath));
             File file = new File();
@@ -68,10 +69,8 @@ public class ServiceGoogleDrive implements IServiceCloudUpload {
             if (destinationDirectories != null && !destinationDirectories.isEmpty()) {
                 file.setParents(destinationDirectories);
             }
-
             inputStream = new FileInputStream(filePath);
             InputStreamContent inputStreamContent = new InputStreamContent(mimeType, new BufferedInputStream(inputStream));
-
             Drive drive = this.buildDriveService();
             drive.files()
                     .create(file, inputStreamContent)
@@ -98,7 +97,7 @@ public class ServiceGoogleDrive implements IServiceCloudUpload {
     private void initialize() throws URISyntaxException, IOException, GeneralSecurityException {
         this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         this.jsonFactory = JacksonFactory.getDefaultInstance();
-        this.dataStore = MemoryDataStoreFactory.getDefaultInstance().getDataStore("credentialDataStore");
+        this.dataStore = MemoryDataStoreFactory.getDefaultInstance().getDataStore(ServiceGoogleDrive.DATA_STORE_ID);
         this.credential = new GoogleCredential.Builder()
                 .setTransport(this.httpTransport)
                 .setJsonFactory(this.jsonFactory)

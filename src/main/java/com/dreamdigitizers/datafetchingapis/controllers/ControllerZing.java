@@ -91,7 +91,10 @@ public class ControllerZing {
             @Override
             public void run() {
                 try {
+                    boolean shouldSave = true;
                     if (shouldDownload) {
+                        shouldSave = false;
+
                         String destinationDirectory = Paths.get(
                                 this.getClass()
                                         .getClassLoader()
@@ -104,17 +107,18 @@ public class ControllerZing {
                                 destinationDirectory,
                                 String.format(ControllerZing.this.downloadFileName, musicZing.getTitle(), musicZing.getId()),
                                 true);
-                        musicZing.setFileName(savedFileName);
 
                         if (!StringUtils.isEmpty(savedFileName)) {
+                            musicZing.setFileName(savedFileName);
+                            
                             String savedFilePath = destinationDirectory + "/" + savedFileName;
                             List<String> destinationDirectories = Arrays.asList(ControllerZing.this.uploadsDirectory);
-                            ControllerZing.this.serviceGoogleDrive.upload(savedFilePath, destinationDirectories);
+                            shouldSave = ControllerZing.this.serviceGoogleDrive.upload(savedFilePath, destinationDirectories);
                             File savedFile = new File(savedFilePath);
                             savedFile.delete();
                         }
                     }
-                    if (!StringUtils.isEmpty(musicZing.getFileName())) {
+                    if (shouldSave) {
                         ControllerZing.this.repositoryMusicZing.save(musicZing);
                     }
                 } catch (URISyntaxException e) {
