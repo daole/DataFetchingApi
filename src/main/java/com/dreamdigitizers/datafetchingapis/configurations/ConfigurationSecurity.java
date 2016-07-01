@@ -10,9 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
-    private static final String API_USER_NAME = "androiddatafetchingapisclient";
-    private static final String API_USER_PASSWORD = "androiddatafetchingapisclient";
-    private static final String API_USER_ROLE = "USER";
+    @Value("${basicAuthenticationUsername}")
+    private String basicAuthenticationUsername;
+
+    @Value("${basicAuthenticationPassword}")
+    private String basicAuthenticationPassword;
+
+    @Value("${basicAuthenticationUserRole}")
+    private String basicAuthenticationUserRole;
 
     @Value("${spring.profiles.active}")
     private String activeProfile;
@@ -20,9 +25,9 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.inMemoryAuthentication()
-                .withUser(ConfigurationSecurity.API_USER_NAME)
-                .password(ConfigurationSecurity.API_USER_PASSWORD)
-                .roles(ConfigurationSecurity.API_USER_ROLE);
+                .withUser(this.basicAuthenticationUsername)
+                .password(this.basicAuthenticationPassword)
+                .roles(this.basicAuthenticationUserRole);
     }
 
     @Override

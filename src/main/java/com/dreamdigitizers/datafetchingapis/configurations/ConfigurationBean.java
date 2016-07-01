@@ -1,7 +1,9 @@
 package com.dreamdigitizers.datafetchingapis.configurations;
 
+import com.dreamdigitizers.datafetchingapis.services.classes.ServiceGoogleDrive;
 import com.dreamdigitizers.datafetchingapis.services.classes.ServiceNct;
 import com.dreamdigitizers.datafetchingapis.services.classes.ServiceZing;
+import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceCloudUpload;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceNct;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
 import org.springframework.context.MessageSource;
@@ -26,6 +28,11 @@ public class ConfigurationBean extends WebMvcConfigurerAdapter {
     @Bean
     public IServiceNct nctService() {
         return new ServiceNct();
+    }
+
+    @Bean
+    public IServiceCloudUpload serviceGoogleDrive() {
+        return new ServiceGoogleDrive();
     }
 
     @Bean

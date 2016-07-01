@@ -1,20 +1,27 @@
 package com.dreamdigitizers.datafetchingapis.controllers;
 
 import com.dreamdigitizers.datafetchingapis.exceptions.ExceptionSongNotFound;
-import com.dreamdigitizers.datafetchingapis.repositories.IRepositoryMusicZing;
-import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
 import com.dreamdigitizers.datafetchingapis.models.MusicZing;
+import com.dreamdigitizers.datafetchingapis.repositories.IRepositoryMusicZing;
+import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceCloudUpload;
+import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
 import com.dreamdigitizers.datafetchingapis.utilities.Downloader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/zing")
@@ -27,6 +34,9 @@ public class ControllerZing {
     @Value("${resources.downloads.zing}")
     private String downloadsDirectory;
 
+    @Value("${google.drive.folders.uploads.zing}")
+    private String uploadsDirectory;
+
     @Value("${constants.refetchMilliseconds}")
     private long refetchMilliseconds;
 
@@ -35,6 +45,9 @@ public class ControllerZing {
 
     @Autowired
     private IServiceZing serviceZing;
+
+    @Autowired
+    private IServiceCloudUpload serviceGoogleDrive;
 
     @Autowired
     private IRepositoryMusicZing repositoryMusicZing;
@@ -68,22 +81,38 @@ public class ControllerZing {
             if (musicZing == null) {
                 throw new ExceptionSongNotFound(this.messageSource, name);
             }
-            this.downloadAndSaveSongInformation(musicZing, shouldDownload);
+            this.saveMusic(musicZing, shouldDownload);
         }
         return musicZing;
     }
 
-    private void downloadAndSaveSongInformation(final MusicZing musicZing, final boolean shouldDownload) {
+    private void saveMusic(final MusicZing musicZing, final boolean shouldDownload) {
         this.downloadThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     if (shouldDownload) {
                         String destinationDirectory = Paths.get(
-                                this.getClass().getClassLoader().getResource(ControllerZing.this.downloadsDirectory).toURI()
-                        ).toFile().getAbsolutePath();
-                        String savedFileName = Downloader.download(musicZing.getSource(), destinationDirectory, String.format(ControllerZing.this.downloadFileName, musicZing.getTitle(), musicZing.getId()), true);
+                                this.getClass()
+                                        .getClassLoader()
+                                        .getResource(ControllerZing.this.downloadsDirectory)
+                                        .toURI())
+                                .toFile()
+                                .getAbsolutePath();
+                        String savedFileName = Downloader.download(
+                                musicZing.getSource(),
+                                destinationDirectory,
+                                String.format(ControllerZing.this.downloadFileName, musicZing.getTitle(), musicZing.getId()),
+                                true);
                         musicZing.setFileName(savedFileName);
+
+                        if (!StringUtils.isEmpty(savedFileName)) {
+                            String savedFilePath = destinationDirectory + "/" + savedFileName;
+                            List<String> destinationDirectories = Arrays.asList(ControllerZing.this.uploadsDirectory);
+                            ControllerZing.this.serviceGoogleDrive.upload(savedFilePath, destinationDirectories);
+                            File savedFile = new File(savedFilePath);
+                            savedFile.delete();
+                        }
                     }
                     if (!StringUtils.isEmpty(musicZing.getFileName())) {
                         ControllerZing.this.repositoryMusicZing.save(musicZing);

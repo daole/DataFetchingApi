@@ -1,7 +1,7 @@
 package com.dreamdigitizers.datafetchingapis.services.classes;
 
-import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
 import com.dreamdigitizers.datafetchingapis.models.MusicZing;
+import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
