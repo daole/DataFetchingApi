@@ -6,8 +6,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 public class ServiceZing implements IServiceZing {
@@ -16,6 +19,9 @@ public class ServiceZing implements IServiceZing {
 
     @Value("${zing.songTitleSeparator}")
     private String songTitleSeparator;
+
+    @Value("${zing.hqIndicationCharacter}")
+    private char hqIndicationCharacter;
 
     @Value("${zing.htmlElementId}")
     private String htmlElementId;
@@ -85,8 +91,17 @@ public class ServiceZing implements IServiceZing {
             musicZing.setTitle(title.text());
             musicZing.setPerformer(performer.text());
             musicZing.setLink(link.text());
-            musicZing.setSource(source.text());
-            musicZing.setHq(hq.text());
+            String sourceText = source.text();
+            musicZing.setSource(sourceText);
+            String hqText = hq.text();
+            try {
+                new URL(hqText);
+            } catch (MalformedURLException e) {
+                StringBuilder stringBuilder = new StringBuilder(sourceText);
+                stringBuilder.setCharAt(stringBuilder.length() - 2, this.hqIndicationCharacter);
+                hqText = stringBuilder.toString();
+            }
+            musicZing.setHq(hqText);
             musicZing.setDuration(duration.text());
             musicZing.setLyric(lyric.text());
             musicZing.setMvLink(mvLink.text());

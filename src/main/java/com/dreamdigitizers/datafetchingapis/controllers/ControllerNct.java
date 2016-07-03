@@ -3,9 +3,7 @@ package com.dreamdigitizers.datafetchingapis.controllers;
 import com.dreamdigitizers.datafetchingapis.exceptions.ExceptionSongNotFound;
 import com.dreamdigitizers.datafetchingapis.models.MusicNct;
 import com.dreamdigitizers.datafetchingapis.repositories.IRepositoryMusicNct;
-import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceCloudUpload;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceNct;
-import com.dreamdigitizers.datafetchingapis.utilities.Downloader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -15,16 +13,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/nct")
-public class ControllerNct {
+public class ControllerNct extends ControllerDownloadAndUploadBase {
     private Thread downloadThread;
 
     @Value("${fileName.downloadFileName}")
@@ -33,17 +28,14 @@ public class ControllerNct {
     @Value("${resources.downloads.nct}")
     private String downloadsDirectory;
 
-    @Value("${google.drive.folders.uploads.nct}")
-    private String uploadsDirectory;
+    @Value("${google.drive.folders.uploads.nct.128kbps}")
+    private String uploadsDirectory128kbps;
 
     @Autowired
     private MessageSource messageSource;
 
     @Autowired
     private IServiceNct serviceNct;
-
-    @Autowired
-    private IServiceCloudUpload serviceGoogleDrive;
 
     @Autowired
     private IRepositoryMusicNct repositoryMusicNct;
@@ -74,30 +66,22 @@ public class ControllerNct {
             @Override
             public void run() {
                 try {
-                    String destinationDirectory = Paths.get(
+                    String downloadDestinationDirectory = Paths.get(
                             this.getClass()
                                     .getClassLoader()
                                     .getResource(ControllerNct.this.downloadsDirectory)
                                     .toURI())
                             .toFile()
                             .getAbsolutePath();
-                    String savedFileName = Downloader.download(
+                    String fileName = String.format(ControllerNct.this.downloadFileName, musicNct.getTitle(), musicNct.getId());
+                    String savedFileName = ControllerNct.this.downloadAndUpload(
                             musicNct.getLocation(),
-                            destinationDirectory,
-                            String.format(ControllerNct.this.downloadFileName, musicNct.getTitle(), musicNct.getId()),
-                            true);
-
+                            fileName,
+                            downloadDestinationDirectory,
+                            ControllerNct.this.uploadsDirectory128kbps);
                     if (!StringUtils.isEmpty(savedFileName)) {
-                        String savedFilePath = destinationDirectory + "/" + savedFileName;
-                        List<String> destinationDirectories = Arrays.asList(ControllerNct.this.uploadsDirectory);
-                        boolean shouldSave = ControllerNct.this.serviceGoogleDrive.upload(savedFilePath, destinationDirectories);
-                        File savedFile = new File(savedFilePath);
-                        savedFile.delete();
-
-                        if (shouldSave) {
-                            musicNct.setFileName(savedFileName);
-                            ControllerNct.this.repositoryMusicNct.save(musicNct);
-                        }
+                        musicNct.setFileName(savedFileName);
+                        ControllerNct.this.repositoryMusicNct.save(musicNct);
                     }
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
