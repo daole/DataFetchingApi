@@ -17,6 +17,12 @@ public class ServiceZing implements IServiceZing {
     @Value("${zing.songUrl}")
     private String songUrl;
 
+    @Value("${zing.xml}")
+    private String xml;
+
+    @Value("${zing.html5xml}")
+    private String html5xml;
+
     @Value("${zing.songTitleSeparator}")
     private String songTitleSeparator;
 
@@ -73,6 +79,7 @@ public class ServiceZing implements IServiceZing {
         Element element = songPageDocument.select(this.htmlElementId).first();
         if (element != null && element.hasAttr(this.htmlElementAttribute)) {
             String songXmlDataUrl = element.attr(this.htmlElementAttribute);
+            songXmlDataUrl = songXmlDataUrl.replace(this.html5xml, this.xml);
             Document songXmlDataDocument = Jsoup.connect(songXmlDataUrl).get();
             Element title = songXmlDataDocument.select(this.xmlElementTitle).first();
             Element performer = songXmlDataDocument.select(this.xmlElementPerformer).first();
