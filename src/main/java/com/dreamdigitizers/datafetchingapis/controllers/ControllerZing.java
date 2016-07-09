@@ -67,7 +67,7 @@ public class ControllerZing extends ControllerDownloadAndUploadBase {
         if (shouldFetch) {
             try {
                 musicZing = this.serviceZing.fetch(name, artist, id);
-                if (!StringUtils.isEmpty(fileName)) {
+                if (!StringUtils.isEmpty(fileName) && musicZing != null) {
                     musicZing.setFileName(fileName);
                 }
             } catch (IOException e) {

@@ -25,6 +25,7 @@ public class MusicNct {
     @Column(name = "location")
     private String location;
 
+    @JsonIgnore
     @Column(name = "location_hq")
     private String locationHq;
 

@@ -6,7 +6,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -74,7 +73,7 @@ public class ServiceZing implements IServiceZing {
     @Override
     public MusicZing fetch(String name, String artist, String id) throws IOException {
         MusicZing musicZing = null;
-        String songPageUrl = String.format(this.songUrl, (name + " " + artist).replace(" ", this.songTitleSeparator), id);
+        String songPageUrl = String.format(this.songUrl, "dump"/*(name + " " + artist).replace(" ", this.songTitleSeparator)*/, id);
         Document songPageDocument = Jsoup.connect(songPageUrl).get();
         Element element = songPageDocument.select(this.htmlElementId).first();
         if (element != null && element.hasAttr(this.htmlElementAttribute)) {

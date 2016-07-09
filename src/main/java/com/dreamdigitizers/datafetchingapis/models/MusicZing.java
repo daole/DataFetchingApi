@@ -25,6 +25,7 @@ public class MusicZing {
     @Column(name = "source")
     private String source;
 
+    @JsonIgnore
     @Column(name = "hq")
     private String hq;
 
