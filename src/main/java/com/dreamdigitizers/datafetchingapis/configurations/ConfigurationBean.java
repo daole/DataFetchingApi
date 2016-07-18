@@ -2,7 +2,7 @@ package com.dreamdigitizers.datafetchingapis.configurations;
 
 import com.dreamdigitizers.datafetchingapis.services.classes.ServiceGoogleDrive;
 import com.dreamdigitizers.datafetchingapis.services.classes.ServiceNct;
-import com.dreamdigitizers.datafetchingapis.services.classes.ServiceZing;
+import com.dreamdigitizers.datafetchingapis.services.classes.ServiceZingApis;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceCloudUpload;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceNct;
 import com.dreamdigitizers.datafetchingapis.services.interfaces.IServiceZing;
@@ -22,7 +22,7 @@ import java.util.Locale;
 public class ConfigurationBean extends WebMvcConfigurerAdapter {
     @Bean
     public IServiceZing zingService() {
-        return new ServiceZing();
+        return new ServiceZingApis();
     }
 
     @Bean

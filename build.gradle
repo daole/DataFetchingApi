@@ -12,12 +12,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'war'
-apply plugin: 'spring-boot' 
-
-jar {
-	baseName = 'datafetchingapis'
-	version = '0.0.1-SNAPSHOT'
-}
+apply plugin: 'spring-boot'
 
 repositories {
 	mavenCentral()
@@ -32,6 +27,8 @@ dependencies {
 	compile('com.google.api-client:google-api-client:1.22.0')
 	compile('com.google.oauth-client:google-oauth-client-jetty:1.22.0')
 	compile('com.google.apis:google-api-services-drive:v3-rev32-1.22.0')
+	compile 'com.squareup.retrofit2:retrofit:2.0.2'
+	compile 'com.squareup.retrofit2:converter-jackson:2.0.2'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
