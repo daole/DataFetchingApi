@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class ServiceZingApis implements IServiceZing {
     @Value("${zing.api.getSongInfo.parameters.requestData.format}")
@@ -46,6 +47,7 @@ public class ServiceZingApis implements IServiceZing {
         musicZing.setBackImage(musicZingApi.getThumbnail());
         musicZing.setErrorCode(musicZingApi.getResponse().getMsgCode());
         musicZing.setErrorMessage(musicZingApi.getResponse().getMsg());
+        musicZing.setLastFetchDatetime(new Date());
 
         return musicZing;
     }
